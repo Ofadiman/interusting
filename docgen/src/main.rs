@@ -1,3 +1,4 @@
+use convert_case::{Case, Casing};
 use std::{
     env,
     fs::{self},
@@ -71,7 +72,9 @@ The repository contains mini projects implemented in the Rust programming langua
     for cargo in cargos {
         readme.push_str(&format!(
             "- [{}](/{}) - {}\n",
-            cargo.package.name, cargo.package.name, cargo.package.description
+            cargo.package.name.to_case(Case::Title),
+            cargo.package.name,
+            cargo.package.description
         ));
     }
 
