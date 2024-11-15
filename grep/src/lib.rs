@@ -38,3 +38,41 @@ pub fn search<'a>(query: &'a str, contents: &'a str) -> Vec<&'a str> {
 
     result
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn no_results() {
+        let query = "Hello";
+        let contents = "Rust:
+safe, fast, productive.
+Pick three.";
+
+        assert_eq!(vec![] as Vec<&str>, search(query, contents));
+    }
+
+    #[test]
+    fn one_result() {
+        let query = "duct";
+        let contents = "Rust:
+safe, fast, productive.
+Pick three.";
+
+        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
+    }
+
+    #[test]
+    fn many_results() {
+        let query = "u";
+        let contents = "Rust:
+safe, fast, productive.
+Pick three.";
+
+        assert_eq!(
+            vec!["Rust:", "safe, fast, productive."],
+            search(query, contents)
+        );
+    }
+}
