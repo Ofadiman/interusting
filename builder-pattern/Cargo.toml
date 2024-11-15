@@ -1,5 +1,6 @@
 [package]
 name = "builder-pattern"
+description = "The project shows how to implement the builder pattern in rust."
 version = "0.1.0"
 edition = "2021"
 

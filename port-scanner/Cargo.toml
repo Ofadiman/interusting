@@ -1,5 +1,6 @@
 [package]
 name = "port-scanner"
+description = "The project implements simple port scanner. It was created with [Make a port scanner in Rust](https://www.youtube.com/watch?v=J3C6sNK2wnk) YouTube video."
 version = "0.1.0"
 edition = "2021"
 

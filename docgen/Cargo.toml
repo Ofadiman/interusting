@@ -1,5 +1,6 @@
 [package]
 name = "docgen"
+description = "The project is a documentation generator. It generates this readme.md file."
 version = "0.1.0"
 edition = "2021"
 
