@@ -8,6 +8,7 @@ use serde::Deserialize;
 #[derive(Deserialize, Debug)]
 struct Package {
     name: String,
+    description: String,
 }
 
 #[derive(Deserialize, Debug)]
@@ -70,9 +71,9 @@ The repository contains mini projects implemented in the Rust programming langua
     for cargo in cargos {
         readme.push_str(&format!(
             "- [{}](/{}) - {}\n",
-            cargo.package.name, cargo.package.name, "todo"
+            cargo.package.name, cargo.package.name, cargo.package.description
         ));
     }
 
-    println!("{readme}")
+    fs::write("../readme.md", readme).expect("regenerating readme must not fail");
 }
