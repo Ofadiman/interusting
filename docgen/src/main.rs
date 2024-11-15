@@ -3,6 +3,18 @@ use std::{
     fs::{self},
 };
 
+use serde::Deserialize;
+
+#[derive(Deserialize, Debug)]
+struct Package {
+    name: String,
+}
+
+#[derive(Deserialize, Debug)]
+struct CargoToml {
+    package: Package,
+}
+
 fn main() {
     let current_dir = env::current_dir().expect("reading current dir must not fail");
     let root_dir = current_dir
@@ -10,9 +22,8 @@ fn main() {
         .expect("getting parent dir must not fail");
 
     let mut projects: Vec<String> = vec![];
-    let root_dir_paths = fs::read_dir(root_dir).expect("reading root dir must not fail");
 
-    for dir_entry_result in root_dir_paths {
+    for dir_entry_result in fs::read_dir(root_dir).expect("reading root dir must not fail") {
         if let Ok(dir_entry) = dir_entry_result {
             if dir_entry
                 .metadata()
@@ -31,5 +42,14 @@ fn main() {
         }
     }
 
-    println!("{projects:#?}");
+    for project in projects {
+        let path = "../".to_string() + &project + "/Cargo.toml";
+
+        let stringified = fs::read_to_string(path).expect("reading Cargo.toml must not fail");
+
+        let c: CargoToml =
+            toml::from_str(&stringified).expect("parsing Cargo.toml string must not fail");
+
+        println!("{c:#?}");
+    }
 }
