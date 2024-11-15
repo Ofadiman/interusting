@@ -42,14 +42,37 @@ fn main() {
         }
     }
 
+    let mut cargos: Vec<CargoToml> = vec![];
+
     for project in projects {
         let path = "../".to_string() + &project + "/Cargo.toml";
 
         let stringified = fs::read_to_string(path).expect("reading Cargo.toml must not fail");
 
-        let c: CargoToml =
+        let cargo: CargoToml =
             toml::from_str(&stringified).expect("parsing Cargo.toml string must not fail");
 
-        println!("{c:#?}");
+        cargos.push(cargo);
     }
+
+    cargos.sort_by(|left, right| left.package.name.cmp(&right.package.name));
+
+    let mut readme = String::from(
+        "# Interusting
+
+The repository contains mini projects implemented in the Rust programming language.
+
+## Projects
+
+",
+    );
+
+    for cargo in cargos {
+        readme.push_str(&format!(
+            "- [{}](/{}) - {}\n",
+            cargo.package.name, cargo.package.name, "todo"
+        ));
+    }
+
+    println!("{readme}")
 }
