@@ -1,8 +1,9 @@
-use std::{error::Error, fs};
+use std::{env, error::Error, fs};
 
 pub struct Config<'a> {
     pub query: &'a String,
     pub file_path: &'a String,
+    pub ignore_case: bool,
 }
 
 impl<'a> Config<'a> {
@@ -11,9 +12,12 @@ impl<'a> Config<'a> {
             return Err("not enough arguments");
         }
 
+        let ignore_case = env::var("IGNORE_CASE").is_ok();
+
         return Ok(Config {
             query: &args[1],
             file_path: &args[2],
+            ignore_case,
         });
     }
 }
@@ -21,7 +25,15 @@ impl<'a> Config<'a> {
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let contents = fs::read_to_string(config.file_path)?;
 
-    println!("With text:\n{contents}");
+    let results = if config.ignore_case {
+        search_case_insensitive(&config.query, &contents)
+    } else {
+        search(&config.query, &contents)
+    };
+
+    for line in results {
+        println!("{line}");
+    }
 
     Ok(())
 }
