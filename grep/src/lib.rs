@@ -1,5 +1,4 @@
-use std::error::Error;
-use std::fs;
+use std::{error::Error, fs};
 
 pub struct Config<'a> {
     pub query: &'a String,
@@ -39,40 +38,100 @@ pub fn search<'a>(query: &'a str, contents: &'a str) -> Vec<&'a str> {
     result
 }
 
+pub fn search_case_insensitive<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
+    let query = query.to_lowercase();
+    let mut results = Vec::new();
+
+    for line in contents.lines() {
+        if line.to_lowercase().contains(&query) {
+            results.push(line);
+        }
+    }
+
+    results
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
 
-    #[test]
-    fn no_results() {
-        let query = "Hello";
-        let contents = "Rust:
+    mod search {
+        use super::*;
+
+        #[test]
+        fn no_results() {
+            let query = "Hello";
+            let contents = "Rust:
 safe, fast, productive.
 Pick three.";
 
-        assert_eq!(vec![] as Vec<&str>, search(query, contents));
+            assert_eq!(vec![] as Vec<&str>, search(query, contents));
+        }
+
+        #[test]
+        fn one_result() {
+            let query = "duct";
+            let contents = "Rust:
+safe, fast, productive.
+Pick three.";
+
+            assert_eq!(vec!["safe, fast, productive."], search(query, contents));
+        }
+
+        #[test]
+        fn many_results() {
+            let query = "u";
+            let contents = "Rust:
+safe, fast, productive.
+Pick three.";
+
+            assert_eq!(
+                vec!["Rust:", "safe, fast, productive."],
+                search(query, contents)
+            );
+        }
     }
 
-    #[test]
-    fn one_result() {
-        let query = "duct";
-        let contents = "Rust:
+    mod search_case_insensitive {
+        use super::*;
+
+        #[test]
+        fn no_results() {
+            let query = "hello";
+            let contents = "Rust:
 safe, fast, productive.
 Pick three.";
 
-        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
-    }
+            assert_eq!(
+                vec![] as Vec<&str>,
+                search_case_insensitive(query, contents)
+            );
+        }
 
-    #[test]
-    fn many_results() {
-        let query = "u";
-        let contents = "Rust:
+        #[test]
+        fn one_result() {
+            let query = "SAFE";
+            let contents = "Rust:
 safe, fast, productive.
 Pick three.";
 
-        assert_eq!(
-            vec!["Rust:", "safe, fast, productive."],
-            search(query, contents)
-        );
+            assert_eq!(
+                vec!["safe, fast, productive."],
+                search_case_insensitive(query, contents)
+            );
+        }
+
+        #[test]
+        fn many_results() {
+            let query = "U";
+            let contents = "Rust:
+safe, fast, productive.
+Pick three.";
+
+            assert_eq!(
+                vec!["Rust:", "safe, fast, productive."],
+                search_case_insensitive(query, contents)
+            );
+        }
     }
 }
