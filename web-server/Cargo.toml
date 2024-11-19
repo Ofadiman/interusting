@@ -1,0 +1,7 @@
+[package]
+name = "web-server"
+description = "Basic web server implemented while studying [The Rust Programming Language](https://doc.rust-lang.org/book/ch12-00-an-io-project.html) book."
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
