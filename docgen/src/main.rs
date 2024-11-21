@@ -17,6 +17,8 @@ struct CargoToml {
     package: Package,
 }
 
+const IGNORED_DIRECTORIES: &'static [&str] = &[".git", "tmp"];
+
 fn main() {
     let current_dir = env::current_dir().expect("reading current dir must not fail");
     let root_dir = current_dir
@@ -32,13 +34,13 @@ fn main() {
                 .expect("getting file metadata must not fail")
                 .is_dir()
             {
-                let file_name = dir_entry
+                let dir_name = dir_entry
                     .file_name()
                     .into_string()
                     .expect("parsing os string into string must not fail");
 
-                if !file_name.contains(".git") {
-                    projects.push(file_name);
+                if IGNORED_DIRECTORIES.contains(&dir_name.as_str()) == false {
+                    projects.push(dir_name);
                 }
             }
         }
