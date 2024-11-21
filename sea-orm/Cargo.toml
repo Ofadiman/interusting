@@ -1,0 +1,7 @@
+[package]
+name = "sea-orm"
+description = "Project demonstrates how to interact with PostgreSQL database using SeaORM library."
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
