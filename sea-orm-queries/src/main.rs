@@ -1,3 +1,5 @@
+mod entities;
+
 use sea_orm::{Database, DbErr};
 
 const DATABASE_URL: &str = "postgres://user:password@localhost:5432/postgres";
