@@ -38,6 +38,39 @@ impl MigrationTrait for Migration {
                     .to_owned(),
             )
             .await
+            .unwrap();
+
+        manager
+            .create_index(
+                Index::create()
+                    .table(Posts::Table)
+                    .col(Posts::CreatedAt)
+                    .to_owned(),
+            )
+            .await
+            .unwrap();
+
+        manager
+            .create_index(
+                Index::create()
+                    .table(Posts::Table)
+                    .col(Posts::UpdatedAt)
+                    .to_owned(),
+            )
+            .await
+            .unwrap();
+
+        manager
+            .create_index(
+                Index::create()
+                    .table(Posts::Table)
+                    .col(Posts::UserId)
+                    .to_owned(),
+            )
+            .await
+            .unwrap();
+
+        Ok(())
     }
 
     async fn down(&self, _manager: &SchemaManager) -> Result<(), DbErr> {

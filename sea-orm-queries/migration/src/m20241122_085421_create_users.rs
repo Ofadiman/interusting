@@ -28,6 +28,29 @@ impl MigrationTrait for Migration {
                     .to_owned(),
             )
             .await
+            .unwrap();
+
+        manager
+            .create_index(
+                Index::create()
+                    .table(Users::Table)
+                    .col(Users::CreatedAt)
+                    .to_owned(),
+            )
+            .await
+            .unwrap();
+
+        manager
+            .create_index(
+                Index::create()
+                    .table(Users::Table)
+                    .col(Users::UpdatedAt)
+                    .to_owned(),
+            )
+            .await
+            .unwrap();
+
+        Ok(())
     }
 
     async fn down(&self, _manager: &SchemaManager) -> Result<(), DbErr> {

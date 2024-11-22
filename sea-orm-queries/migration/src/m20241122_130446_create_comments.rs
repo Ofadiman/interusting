@@ -45,6 +45,49 @@ impl MigrationTrait for Migration {
                     .to_owned(),
             )
             .await
+            .unwrap();
+
+        manager
+            .create_index(
+                Index::create()
+                    .table(Comments::Table)
+                    .col(Comments::CreatedAt)
+                    .to_owned(),
+            )
+            .await
+            .unwrap();
+
+        manager
+            .create_index(
+                Index::create()
+                    .table(Comments::Table)
+                    .col(Comments::UpdatedAt)
+                    .to_owned(),
+            )
+            .await
+            .unwrap();
+
+        manager
+            .create_index(
+                Index::create()
+                    .table(Comments::Table)
+                    .col(Comments::PostId)
+                    .to_owned(),
+            )
+            .await
+            .unwrap();
+
+        manager
+            .create_index(
+                Index::create()
+                    .table(Comments::Table)
+                    .col(Comments::UserId)
+                    .to_owned(),
+            )
+            .await
+            .unwrap();
+
+        Ok(())
     }
 
     async fn down(&self, _manager: &SchemaManager) -> Result<(), DbErr> {
