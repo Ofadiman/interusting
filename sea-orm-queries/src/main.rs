@@ -5,12 +5,13 @@ mod entities;
 use entities::bakery;
 use entities::{prelude::*, *};
 use sea_orm::*;
+use sea_query::{Alias, Expr, Query};
 
 const DATABASE_URL: &str = "postgres://user:password@localhost:5432/postgres";
 
 #[tokio::main]
 async fn main() {
-    if let Err(err) = relationships().await {
+    if let Err(err) = query_builder().await {
         panic!("{}", err);
     }
 }
@@ -154,6 +155,49 @@ async fn relationships() -> Result<(), DbErr> {
         chefs[1].to_owned().into_iter().map(|b| b.name).collect();
     arte_chef_names.sort_unstable();
     assert_eq!(arte_chef_names, ["Brian", "Charles", "Kate", "Samantha"]);
+
+    Ok(())
+}
+
+#[derive(FromQueryResult)]
+struct ChefNameResult {
+    name: String,
+}
+
+async fn query_builder() -> Result<(), DbErr> {
+    let db = Database::connect(DATABASE_URL).await?;
+
+    let columns: Vec<Alias> = ["name", "profit_margin"]
+        .into_iter()
+        .map(Alias::new)
+        .collect();
+
+    let mut stmt = Query::insert();
+    stmt.into_table(bakery::Entity).columns(columns);
+
+    stmt.values_panic(["SQL Bakery".into(), (-100.0).into()]);
+
+    let builder = db.get_database_backend();
+    db.execute(builder.build(&stmt)).await?;
+
+    let column = (chef::Entity, Alias::new("name"));
+
+    let mut stmt = Query::select();
+    stmt.column(column.clone())
+        .from(chef::Entity)
+        .join(
+            JoinType::Join,
+            bakery::Entity,
+            Expr::col((chef::Entity, Alias::new("bakery_id")))
+                .equals((bakery::Entity, Alias::new("id"))),
+        )
+        .order_by(column, Order::Asc);
+
+    let builder = db.get_database_backend();
+    let chef = ChefNameResult::find_by_statement(builder.build(&stmt))
+        .all(&db)
+        .await?;
+    let _chef_names = chef.into_iter().map(|b| b.name).collect::<Vec<_>>();
 
     Ok(())
 }
