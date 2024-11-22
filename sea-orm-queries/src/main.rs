@@ -2,6 +2,8 @@
 
 mod entities;
 
+use std::time::Duration;
+
 use entities::bakery;
 use entities::{prelude::*, *};
 use sea_orm::*;
@@ -16,8 +18,24 @@ async fn main() {
     }
 }
 
+async fn database() -> DatabaseConnection {
+    let mut options = ConnectOptions::new("postgres://user:password@localhost:5432/postgres");
+
+    options
+        .max_connections(100)
+        .min_connections(5)
+        .connect_timeout(Duration::from_secs(8))
+        .acquire_timeout(Duration::from_secs(8))
+        .idle_timeout(Duration::from_secs(8))
+        .max_lifetime(Duration::from_secs(8))
+        .sqlx_logging(false)
+        .set_schema_search_path("public");
+
+    return Database::connect(options).await.unwrap();
+}
+
 async fn crud() -> Result<(), DbErr> {
-    let db = Database::connect(DATABASE_URL).await?;
+    let db = &database().await;
 
     let bakery = bakery::ActiveModel {
         name: ActiveValue::Set("Bistro Charlotte".to_string()),
@@ -26,39 +44,39 @@ async fn crud() -> Result<(), DbErr> {
     };
 
     // InsertResult { last_insert_id: 1 }
-    let insert_result = Bakery::insert(bakery).exec(&db).await?;
+    let insert_result = Bakery::insert(bakery).exec(db).await?;
 
     // ActiveModel { id: Unchanged(1), name: Unchanged("Bistro Charlotte"), profit_margin: Unchanged(8.0) }
     let mut bakery: bakery::ActiveModel = Bakery::find_by_id(insert_result.last_insert_id)
-        .one(&db)
+        .one(db)
         .await?
         .unwrap()
         .into();
 
     bakery.name = ActiveValue::Set("Lajkonik".to_string());
-    bakery.update(&db).await?;
+    bakery.update(db).await?;
 
     let john = chef::ActiveModel {
         name: ActiveValue::Set("John".to_string()),
         bakery_id: ActiveValue::Set(insert_result.last_insert_id),
         ..Default::default()
     };
-    Chef::insert(john).exec(&db).await?;
+    Chef::insert(john).exec(db).await?;
 
     // [Model { id: 1, name: "Lajkonik", profit_margin: 8.0 }]
-    let mut bakeries: Vec<bakery::Model> = Bakery::find().all(&db).await?;
+    let mut bakeries: Vec<bakery::Model> = Bakery::find().all(db).await?;
 
     // [Model { id: 1, name: "John", contact_details: None, bakery_id: 4 }]
-    let mut chefs: Vec<chef::Model> = Chef::find().all(&db).await?;
+    let mut chefs: Vec<chef::Model> = Chef::find().all(db).await?;
 
-    chefs.remove(0).delete(&db).await?;
-    bakeries.remove(0).delete(&db).await?;
+    chefs.remove(0).delete(db).await?;
+    bakeries.remove(0).delete(db).await?;
 
     Ok(())
 }
 
 async fn relationships() -> Result<(), DbErr> {
-    let db = &Database::connect(DATABASE_URL).await?;
+    let db = &database().await;
 
     let la_boulangerie = bakery::ActiveModel {
         name: ActiveValue::Set("La Boulangerie".to_owned()),
@@ -165,7 +183,7 @@ struct ChefNameResult {
 }
 
 async fn query_builder() -> Result<(), DbErr> {
-    let db = Database::connect(DATABASE_URL).await?;
+    let db = &database().await;
 
     let columns: Vec<Alias> = ["name", "profit_margin"]
         .into_iter()
@@ -195,7 +213,7 @@ async fn query_builder() -> Result<(), DbErr> {
 
     let builder = db.get_database_backend();
     let chef = ChefNameResult::find_by_statement(builder.build(&stmt))
-        .all(&db)
+        .all(db)
         .await?;
     let _chef_names = chef.into_iter().map(|b| b.name).collect::<Vec<_>>();
 
