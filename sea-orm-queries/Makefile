@@ -6,4 +6,4 @@ migrate:
 # SeaORM automatically generates Rust entities from database schemas.
 .PHONY: entities
 entities:
-	sea-orm-cli generate entity --database-url postgres://user:password@localhost:5432/postgres --output-dir src/entities
+	sea-orm-cli generate entity --database-url postgres://user:password@localhost:5432/postgres --output-dir src/entities --with-serde both
