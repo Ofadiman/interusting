@@ -18,7 +18,18 @@ async fn main() {
     }
 }
 
+// https://www.sea-ql.org/SeaORM/docs/install-and-config/debug-log/
+fn initialize_debug_log() {
+    std::env::set_var("RUST_LOG", "debug");
+    tracing_subscriber::fmt()
+        .with_max_level(tracing::Level::DEBUG)
+        .with_test_writer()
+        .init();
+}
+
 async fn database() -> DatabaseConnection {
+    initialize_debug_log();
+
     let mut options = ConnectOptions::new("postgres://user:password@localhost:5432/postgres");
 
     options
