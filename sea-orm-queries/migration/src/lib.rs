@@ -3,6 +3,7 @@ pub use sea_orm_migration::prelude::*;
 mod m20241121_000001_create_bakery_table;
 mod m20241121_000002_create_chef_table;
 mod m20241122_085421_create_users;
+mod m20241122_125531_create_posts;
 
 pub struct Migrator;
 
@@ -13,6 +14,7 @@ impl MigratorTrait for Migrator {
             Box::new(m20241121_000001_create_bakery_table::Migration),
             Box::new(m20241121_000002_create_chef_table::Migration),
             Box::new(m20241122_085421_create_users::Migration),
+            Box::new(m20241122_125531_create_posts::Migration),
         ]
     }
 }

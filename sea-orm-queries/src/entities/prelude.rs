@@ -2,4 +2,5 @@
 
 pub use super::bakery::Entity as Bakery;
 pub use super::chef::Entity as Chef;
+pub use super::posts::Entity as Posts;
 pub use super::users::Entity as Users;

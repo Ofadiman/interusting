@@ -1,5 +1,7 @@
 use sea_orm_migration::prelude::*;
 
+use crate::m20241122_085421_create_users::Users;
+
 #[derive(DeriveMigrationName)]
 pub struct Migration;
 
@@ -9,21 +11,29 @@ impl MigrationTrait for Migration {
         manager
             .create_table(
                 Table::create()
-                    .table(Users::Table)
-                    .col(ColumnDef::new(Users::Id).uuid().not_null().primary_key())
-                    .col(ColumnDef::new(Users::FirstName).string().not_null())
-                    .col(ColumnDef::new(Users::LastName).string().not_null())
+                    .table(Posts::Table)
+                    .col(ColumnDef::new(Posts::Id).uuid().not_null().primary_key())
+                    .col(ColumnDef::new(Posts::Title).text().not_null())
+                    .col(ColumnDef::new(Posts::Content).text().not_null())
                     .col(
-                        ColumnDef::new(Users::CreatedAt)
+                        ColumnDef::new(Posts::CreatedAt)
                             .timestamp_with_time_zone()
                             .not_null()
                             .default(SimpleExpr::Keyword(Keyword::CurrentTimestamp)),
                     )
                     .col(
-                        ColumnDef::new(Users::UpdatedAt)
+                        ColumnDef::new(Posts::UpdatedAt)
                             .timestamp_with_time_zone()
                             .not_null()
                             .default(SimpleExpr::Keyword(Keyword::CurrentTimestamp)),
+                    )
+                    .col(ColumnDef::new(Posts::UserId).uuid())
+                    .foreign_key(
+                        ForeignKey::create()
+                            .from(Posts::Table, Posts::UserId)
+                            .to(Users::Table, Users::Id)
+                            .on_delete(ForeignKeyAction::Cascade)
+                            .on_update(ForeignKeyAction::Cascade),
                     )
                     .to_owned(),
             )
@@ -36,11 +46,12 @@ impl MigrationTrait for Migration {
 }
 
 #[derive(DeriveIden)]
-pub enum Users {
+pub enum Posts {
     Table,
     Id,
-    FirstName,
-    LastName,
+    Title,
+    Content,
     CreatedAt,
     UpdatedAt,
+    UserId,
 }

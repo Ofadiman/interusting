@@ -2,8 +2,5 @@
 .PHONY: migrate
 migrate:
 	sea-orm-cli migrate fresh --database-url postgres://user:password@localhost:5432/postgres
-
-# SeaORM automatically generates Rust entities from database schemas.
-.PHONY: entities
-entities:
+  # SeaORM can generate Rust structs from database schemas.
 	sea-orm-cli generate entity --database-url postgres://user:password@localhost:5432/postgres --output-dir src/entities --with-serde both

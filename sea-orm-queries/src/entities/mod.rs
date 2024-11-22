@@ -4,4 +4,5 @@ pub mod prelude;
 
 pub mod bakery;
 pub mod chef;
+pub mod posts;
 pub mod users;
