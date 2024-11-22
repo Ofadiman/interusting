@@ -1,6 +1,6 @@
 use sea_orm_migration::prelude::*;
 
-use crate::m20241122_085421_create_users::Users;
+use crate::{m20241122_085421_create_users::Users, m20241122_125531_create_posts::Posts};
 
 #[derive(DeriveMigrationName)]
 pub struct Migration;
@@ -11,26 +11,33 @@ impl MigrationTrait for Migration {
         manager
             .create_table(
                 Table::create()
-                    .table(Posts::Table)
-                    .col(ColumnDef::new(Posts::Id).uuid().not_null().primary_key())
-                    .col(ColumnDef::new(Posts::Title).text().not_null())
-                    .col(ColumnDef::new(Posts::Content).text().not_null())
+                    .table(Comments::Table)
+                    .col(ColumnDef::new(Comments::Id).uuid().not_null().primary_key())
+                    .col(ColumnDef::new(Comments::Content).text().not_null())
                     .col(
-                        ColumnDef::new(Posts::CreatedAt)
+                        ColumnDef::new(Comments::CreatedAt)
                             .timestamp_with_time_zone()
                             .not_null()
                             .default(SimpleExpr::Keyword(Keyword::CurrentTimestamp)),
                     )
                     .col(
-                        ColumnDef::new(Posts::UpdatedAt)
+                        ColumnDef::new(Comments::UpdatedAt)
                             .timestamp_with_time_zone()
                             .not_null()
                             .default(SimpleExpr::Keyword(Keyword::CurrentTimestamp)),
                     )
-                    .col(ColumnDef::new(Posts::UserId).uuid().not_null())
+                    .col(ColumnDef::new(Comments::PostId).uuid().not_null())
                     .foreign_key(
                         ForeignKey::create()
-                            .from(Posts::Table, Posts::UserId)
+                            .from(Comments::Table, Comments::PostId)
+                            .to(Posts::Table, Posts::Id)
+                            .on_delete(ForeignKeyAction::Cascade)
+                            .on_update(ForeignKeyAction::Cascade),
+                    )
+                    .col(ColumnDef::new(Comments::UserId).uuid().not_null())
+                    .foreign_key(
+                        ForeignKey::create()
+                            .from(Comments::Table, Comments::UserId)
                             .to(Users::Table, Users::Id)
                             .on_delete(ForeignKeyAction::Cascade)
                             .on_update(ForeignKeyAction::Cascade),
@@ -46,12 +53,12 @@ impl MigrationTrait for Migration {
 }
 
 #[derive(DeriveIden)]
-pub enum Posts {
+pub enum Comments {
     Table,
     Id,
-    Title,
     Content,
     CreatedAt,
     UpdatedAt,
+    PostId,
     UserId,
 }
