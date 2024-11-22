@@ -10,7 +10,13 @@ impl MigrationTrait for Migration {
             .create_table(
                 Table::create()
                     .table(Users::Table)
-                    .col(ColumnDef::new(Users::Id).uuid().not_null().primary_key())
+                    .col(
+                        ColumnDef::new(Users::Id)
+                            .uuid()
+                            .not_null()
+                            .primary_key()
+                            .default(SimpleExpr::Custom("uuid_generate_v4()".to_string())),
+                    )
                     .col(ColumnDef::new(Users::FirstName).string().not_null())
                     .col(ColumnDef::new(Users::LastName).string().not_null())
                     .col(

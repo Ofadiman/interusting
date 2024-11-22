@@ -12,7 +12,13 @@ impl MigrationTrait for Migration {
             .create_table(
                 Table::create()
                     .table(Posts::Table)
-                    .col(ColumnDef::new(Posts::Id).uuid().not_null().primary_key())
+                    .col(
+                        ColumnDef::new(Posts::Id)
+                            .uuid()
+                            .not_null()
+                            .primary_key()
+                            .default(SimpleExpr::Custom("uuid_generate_v4()".to_string())),
+                    )
                     .col(ColumnDef::new(Posts::Title).text().not_null())
                     .col(ColumnDef::new(Posts::Content).text().not_null())
                     .col(
