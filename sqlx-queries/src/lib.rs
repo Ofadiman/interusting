@@ -34,3 +34,14 @@ pub struct User {
     pub created_at: DateTime<Utc>,
     pub updated_at: Option<DateTime<Utc>>,
 }
+
+#[derive(Iden)]
+pub enum Posts {
+    Table,
+    Id,
+    Title,
+    Content,
+    UserId,
+    CreatedAt,
+    UpdatedAt,
+}
