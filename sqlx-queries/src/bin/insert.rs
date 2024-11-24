@@ -1,34 +1,8 @@
 #![allow(dead_code)]
 
-use sea_query::{Iden, PostgresQueryBuilder, Query, ReturningClause};
+use sea_query::{PostgresQueryBuilder, Query, ReturningClause};
 use sea_query_binder::SqlxBinder;
-use sqlx::{
-    prelude::FromRow,
-    types::{
-        chrono::{DateTime, Utc},
-        Uuid,
-    },
-};
-use sqlx_queries::create_connections_pool;
-
-#[derive(Iden)]
-enum Users {
-    Table,
-    Id,
-    FirstName,
-    LastName,
-    CreatedAt,
-    UpdatedAt,
-}
-
-#[derive(FromRow, Debug)]
-struct User {
-    id: Uuid,
-    first_name: String,
-    last_name: String,
-    created_at: DateTime<Utc>,
-    updated_at: Option<DateTime<Utc>>,
-}
+use sqlx_queries::{create_connections_pool, User, Users};
 
 #[tokio::main]
 async fn main() {
