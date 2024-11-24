@@ -1,0 +1,7 @@
+[package]
+name = "sqlx-queries"
+description = "Project demonstrates how to interact with PostgreSQL database using sea-query and sqlx libraries."
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
