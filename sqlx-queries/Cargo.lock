@@ -1206,6 +1206,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "sea-query-binder"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b0019f47430f7995af63deda77e238c17323359af241233ec768aba1faea7608"
+dependencies = [
+ "chrono",
+ "sea-query",
+ "sqlx",
+ "uuid",
+]
+
+[[package]]
 name = "sea-query-derive"
 version = "0.4.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1552,6 +1564,7 @@ name = "sqlx-queries"
 version = "0.1.0"
 dependencies = [
  "sea-query",
+ "sea-query-binder",
  "sqlx",
  "tokio",
 ]

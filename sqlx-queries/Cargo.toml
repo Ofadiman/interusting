@@ -6,5 +6,6 @@ edition = "2021"
 
 [dependencies]
 sea-query = { version = "0.32.0", features = ["derive", "thread-safe", "backend-postgres", "with-chrono", "with-uuid"] }
+sea-query-binder = { version = "0.7.0", features = ["runtime-tokio-rustls", "sqlx-postgres", "with-chrono", "with-uuid"] }
 sqlx = { version = "0.8.2", features = ["runtime-tokio", "tls-rustls", "postgres", "derive", "macros", "uuid", "chrono"] }
 tokio = { version = "1.41.1", features = ["full"] }
