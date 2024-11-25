@@ -1,8 +1,10 @@
-use rand::{thread_rng, Rng};
+use rand::{Rng, SeedableRng};
+use rand_chacha::ChaCha8Rng;
 use std::collections::HashMap;
 
 fn main() {
-    let mut rng = thread_rng();
+    let mut rng = ChaCha8Rng::seed_from_u64(1);
+
     let distribution = rand::distributions::Uniform::new_inclusive(1, 25);
 
     let mut numbers: HashMap<i32, i32> = HashMap::new();

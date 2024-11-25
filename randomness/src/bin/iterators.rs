@@ -1,7 +1,8 @@
-use rand::{seq::IteratorRandom, thread_rng};
+use rand::{seq::IteratorRandom, SeedableRng};
+use rand_chacha::ChaCha8Rng;
 
 fn main() {
-    let mut rng = thread_rng();
+    let mut rng = ChaCha8Rng::seed_from_u64(1);
 
     let programming_languages = vec![
         "Python".to_string(),
