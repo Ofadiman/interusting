@@ -1,0 +1,7 @@
+[package]
+name = "environment-variables"
+description = "The project shows how to use [config](https://docs.rs/config/latest/config/) crate to manage environment variables."
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
