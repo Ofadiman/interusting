@@ -2,7 +2,6 @@
 
 use config::{Config, Environment, File, FileFormat};
 use serde::Deserialize;
-use std::env;
 
 #[derive(Deserialize, Debug)]
 struct Database {
@@ -25,16 +24,10 @@ struct Settings {
     actix: Actix,
     database: Database,
     redis: Redis,
-    users: String,
 }
 
 fn main() {
-    env::set_var(
-        "INTERUSTING_USERS",
-        "admin:password,moderator:password,user:password",
-    );
-
-    env::set_var("INTERUSTING_REDIS__URL", "redis://localhost:6379");
+    dotenvy::from_filename(".example.env").unwrap();
 
     let settings = Config::builder()
         .add_source(File::new("configs/database.json", FileFormat::Json))

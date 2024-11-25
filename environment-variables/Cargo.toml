@@ -6,4 +6,5 @@ edition = "2021"
 
 [dependencies]
 config = "0.14.1"
+dotenvy = "0.15.7"
 serde = "1.0.215"
