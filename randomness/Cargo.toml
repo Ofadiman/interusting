@@ -1,0 +1,7 @@
+[package]
+name = "randomness"
+description = "This project demonstrates how to generate random data."
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
